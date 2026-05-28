@@ -52,8 +52,7 @@ public class LibraryService {
     }
 
     public int countBooks() {
-        // TODO: implementar contagem total de livros
-        return 0;
+        return books.size();
     }
 
     public int countAvailableBooks() {
