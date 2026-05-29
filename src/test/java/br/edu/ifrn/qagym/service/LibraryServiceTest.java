@@ -60,4 +60,11 @@ class LibraryServiceTest {
         service.addBook(b2);
         assertThat(service.getAllBooks()).hasSize(2);
     }
+    @Test
+    void verificaLivroComIsbnDuplicado() {
+        Book book = new Book("978-0-13-468599-1", "Clean Code", "Robert C. Martin", 2008);
+        service.addBook(book);
+        Book bookDoubled = new Book("978-0-13-468599-1", "Clean Code", "Robert C. Martin", 2008);
+        assertThatThrownBy(() -> service.addBook(bookDoubled)).isInstanceOf(IllegalArgumentException.class).hasMessage("Livro já cadastrado");
+    }
 }
