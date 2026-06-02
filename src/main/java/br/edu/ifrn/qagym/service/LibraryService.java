@@ -47,7 +47,12 @@ public class LibraryService {
     }
 
     public List<Book> findBooksByAuthor(String author) {
-        // TODO: implementar busca por autor
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getAuthor().equals(author)) {
+                result.add(book);
+            }
+        }
         return List.of();
     }
 

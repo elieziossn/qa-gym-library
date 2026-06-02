@@ -47,6 +47,14 @@ class LibraryServiceTest {
     }
 
     @Test
+    void deveBuscarLivrosPorAutor() {
+        Book book = new Book("978-0-13-468599-1", "Clean Code", "Robert C. Martin", 2008);
+        service.addBook(book);
+        List<Book> found = service.findBooksByAuthor("Robert C. Martin");
+        assertThat(found).contains(book);
+    }
+
+    @Test
     void deveRetornarListaVaziaParaTituloInexistente() {
         List<Book> found = service.findBooksByTitle("Titulo Inexistente");
         assertThat(found).isEmpty();
