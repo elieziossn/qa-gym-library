@@ -53,7 +53,7 @@ public class LibraryService {
                 result.add(book);
             }
         }
-        return List.of();
+        return result;
     }
 
     public int countBooks() {
