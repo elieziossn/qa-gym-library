@@ -13,8 +13,13 @@ public class ReportService {
     }
 
     public int countAvailableBooks(List<Book> books) {
-        // TODO: implementar contagem de livros disponíveis
-        return 0;
+        int n = 0;
+    for (Book book : books) {
+        if (book.isAvailable()) {
+            n++;
+        }
+    }
+        return n;
     }
 
     public int countUnavailableBooks(List<Book> books) {
