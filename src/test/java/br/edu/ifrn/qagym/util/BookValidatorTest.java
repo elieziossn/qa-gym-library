@@ -30,9 +30,9 @@ public class BookValidatorTest {
     @Test
     void deveRetornarFalsoQuandoAutorForVazio() {
 
-        Book livroAutorNulo = new Book("12345", "O hobbit", "", 1902);
+        Book livroAutorVazio = new Book("12345", "O hobbit", "", 1902);
 
-        boolean resultado = validator.isValid(livroAutorNulo);
+        boolean resultado = validator.isValid(livroAutorVazio);
 
         assertFalse(resultado, "O validador deveria rejeitar um autor em branco.");
     }
