@@ -1,7 +1,7 @@
 package br.edu.ifrn.qagym.util;
 
 import br.edu.ifrn.qagym.model.Book;
-
+import java.time.Year;
 public class BookValidator {
 
     public boolean isValid(Book book) {
@@ -16,6 +16,9 @@ public class BookValidator {
         }
         // TODO: validar autor vazio
         // TODO: validar ano de publicação inválido (ex: ano futuro ou negativo)
+        if(book.getPublicationYear() <= 0 || book.getPublicationYear() > Year.now().getValue()){
+            return false;
+        }
         return true;
     }
 }
