@@ -10,6 +10,7 @@ public class LibraryService {
 
     private final List<Book> books = new ArrayList<>();
     private final List<User> users = new ArrayList<>();
+    private Book book;
 
     public void addBook(Book book) {
         books.add(book);
@@ -46,35 +47,42 @@ public class LibraryService {
         return result;
     }
 
-    public List<Book> findBooksByAuthor(String author) {
-        // TODO: implementar busca por autor
-        return List.of();
-    }
+//    public List<Book> findBooksByAuthor(String author) {
+//        // TODO: implementar busca por autor
+//        return List.of();
+//    }
+//
+//    public int countBooks() {
+//        // TODO: implementar contagem total de livros
+//        return 0;
+//    }
+//
+//    public int countAvailableBooks() {
+//        // TODO: implementar contagem de livros disponíveis
+//        return 0;
+//    }
 
-    public int countBooks() {
-        // TODO: implementar contagem total de livros
-        return 0;
-    }
-
-    public int countAvailableBooks() {
-        // TODO: implementar contagem de livros disponíveis
-        return 0;
-    }
-
+    //Implementado Por Bruniely
     public int countUnavailableBooks() {
-        // TODO: implementar contagem de livros indisponíveis
-        return 0;
+          int qtdlivro = 0;
+            for (Book book : books){
+                if(!book.isAvailable()){
+                  qtdlivro++;
+                }
+            }
+
+        return qtdlivro;
     }
 
-    public List<Book> sortBooksByTitle() {
-        // TODO: implementar ordenação por título
-        return List.of();
-    }
-
-    public List<Book> sortBooksByYear() {
-        // TODO: implementar ordenação por ano
-        return List.of();
-    }
+//    public List<Book> sortBooksByTitle() {
+//        // TODO: implementar ordenação por título
+//        return List.of();
+//    }
+//
+//    public List<Book> sortBooksByYear() {
+//        // TODO: implementar ordenação por ano
+//        return List.of();
+//    }
 
     public List<Book> getBooks(String type) {
         if (type.equals("available")) {
