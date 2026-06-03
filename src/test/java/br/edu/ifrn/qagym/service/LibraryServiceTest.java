@@ -71,8 +71,8 @@ class LibraryServiceTest {
         service.addBook(b2);
         service.addBook(b3); 
 
-        List<Book> resultado = service.sortBooksByTitle();
+        List<Book> result = service.sortBooksByTitle();
 
-        assertThat(resultado).containsExactly(b3, b2, b1);
+        assertThat(result).containsExactly(b3, b2, b1);
     }
 }
