@@ -13,13 +13,14 @@ public class ReportService {
     }
 
     public int countAvailableBooks(List<Book> books) {
-        int n = 0;
-    for (Book book : books) {
-        if (book.isAvailable()) {
-            n++;
+        
+        if (books == null || books.isEmpty()) {
+            return 0;
         }
-    }
-        return n;
+
+        return (int) books.stream()
+                          .filter(Book::isAvailable)
+                          .count();
     }
 
     public int countUnavailableBooks(List<Book> books) {
