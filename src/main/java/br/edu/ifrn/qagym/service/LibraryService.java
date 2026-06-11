@@ -14,6 +14,9 @@ public class LibraryService {
     private Book book;
 
     public void addBook(Book book) {
+        if (isBookRegistered(book.getIsbn())){
+            throw new IllegalArgumentException("Livro já cadastrado");
+        }
         books.add(book);
     }
 
@@ -99,15 +102,17 @@ public class LibraryService {
         return sorted;
     }
 
-//    public List<Book> sortBooksByTitle() {
-//        // TODO: implementar ordenação por título
-//        return List.of();
-//    }
-//
-//    public List<Book> sortBooksByYear() {
-//        // TODO: implementar ordenação por ano
-//        return List.of();
-//    }
+    public List<Book> sortBooksByYear() {
+        // TODO: implementar ordenação por ano
+        return List.of();
+    }
+    public boolean isBookRegistered(String isbn){
+        
+        if (findBookByIsbn(isbn) != null){
+            return true;
+        }
+        return false;
+    }
 
     public List<Book> getBooks(String type) {
         if (type.equals("available")) {

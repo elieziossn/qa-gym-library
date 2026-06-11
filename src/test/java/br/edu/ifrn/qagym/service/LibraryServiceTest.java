@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LibraryServiceTest {
 
@@ -60,7 +61,12 @@ class LibraryServiceTest {
         service.addBook(b2);
         assertThat(service.getAllBooks()).hasSize(2);
     }
-
+    @Test
+    void verificaLivroComIsbnDuplicado() {
+        Book book = new Book("978-0-13-468599-1", "Clean Code", "Robert C. Martin", 2008);
+        service.addBook(book);
+        assertThatThrownBy(() -> service.addBook(book)).isInstanceOf(IllegalArgumentException.class).hasMessage("Livro já cadastrado");
+    }
     @Test
     void deveRetornarLivrosOrdenadosQuandoIniciamComAMesmaLetra() {
         Book b1 = new Book("ISBN-1", "Cracking the Coding Interview", "Gayle Laakmann", 2015);
