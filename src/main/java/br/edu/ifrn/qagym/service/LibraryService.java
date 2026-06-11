@@ -13,6 +13,9 @@ public class LibraryService {
     private final List<User> users = new ArrayList<>();
 
     public void addBook(Book book) {
+        if (isBookRegistered(book.getIsbn())){
+            throw new IllegalArgumentException("Livro já cadastrado");
+        }
         books.add(book);
     }
 
@@ -82,6 +85,13 @@ public class LibraryService {
     public List<Book> sortBooksByYear() {
         // TODO: implementar ordenação por ano
         return List.of();
+    }
+    public boolean isBookRegistered(String isbn){
+        
+        if (findBookByIsbn(isbn) != null){
+            return true;
+        }
+        return false;
     }
 
     public List<Book> getBooks(String type) {
