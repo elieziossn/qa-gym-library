@@ -4,6 +4,7 @@ import br.edu.ifrn.qagym.model.Book;
 import br.edu.ifrn.qagym.model.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class LibraryService {
@@ -59,9 +60,15 @@ public class LibraryService {
         return 0;
     }
 
-    public int countAvailableBooks() {
-        // TODO: implementar contagem de livros disponíveis
-        return 0;
+  public int countAvailableBooks() {
+       
+        if (books.isEmpty()) {
+            return 0;
+        }
+
+        return (int) books.stream()
+                          .filter(Book::isAvailable)
+                          .count();
     }
 
     public int countUnavailableBooks() {
@@ -70,8 +77,9 @@ public class LibraryService {
     }
 
     public List<Book> sortBooksByTitle() {
-        // TODO: implementar ordenação por título
-        return List.of();
+        List<Book> sorted = new ArrayList<>(books);
+        sorted.sort(Comparator.comparing(Book::getTitle));
+        return sorted;
     }
 
     public List<Book> sortBooksByYear() {
