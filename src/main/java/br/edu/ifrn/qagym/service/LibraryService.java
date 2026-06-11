@@ -63,6 +63,27 @@ public class LibraryService {
 //    }
 
     //Implementado Por Bruniely
+    public List<Book> findBooksByAuthor(String author) {
+        // TODO: implementar busca por autor
+        return List.of();
+    }
+
+    public int countBooks() {
+        // TODO: implementar contagem total de livros
+        return 0;
+    }
+
+  public int countAvailableBooks() {
+       
+        if (books.isEmpty()) {
+            return 0;
+        }
+
+        return (int) books.stream()
+                          .filter(Book::isAvailable)
+                          .count();
+    }
+
     public int countUnavailableBooks() {
           int qtdlivro = 0;
             for (Book book : books){
