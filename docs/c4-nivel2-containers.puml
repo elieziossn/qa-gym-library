@@ -1,0 +1,51 @@
+@startuml c4-nivel2-containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Sistema qa-gym-library — Nível 2: Diagrama de Containers\n(Arquitetura projetada)
+
+LAYOUT_WITH_LEGEND()
+
+' ─── Atores ───────────────────────────────────────────────
+Person(admin, "Administrador", "Gerencia usuários e configurações.")
+Person(bibliotecario, "Bibliotecário", "Gerencia acervo e empréstimos.")
+Person(professor, "Professor", "Realiza empréstimos com prazo estendido.")
+Person(aluno, "Aluno", "Realiza empréstimos e devoluções.")
+
+' ─── Sistemas externos ────────────────────────────────────
+System_Ext(suap, "SUAP", "Provedor de identidade SSO\ndo IFRN via OAuth2.")
+System_Ext(abacatepay, "Abacate Pay", "Gateway de pagamento\npara multas e doações.")
+System_Ext(gmail, "Google Gmail API", "Serviço de envio\nde e-mails transacionais.")
+
+' ─── Boundary do sistema ──────────────────────────────────
+System_Boundary(qagym, "qa-gym-library") {
+
+    Container(frontend, "Aplicação Web", "HTML / CSS / JavaScript", "Interface gráfica para todos os perfis.\nPermite consultar acervo, gerenciar\nempréstimos e visualizar relatórios.")
+
+    Container(api, "API REST", "Java 21 · Spring Boot", "Núcleo da aplicação. Processa as regras\nde negócio, coordena empréstimos,\nvalida dados e orquestra integrações.")
+
+    ContainerDb(db, "Banco de Dados", "PostgreSQL", "Persiste livros, usuários, empréstimos,\nhistórico de multas e pagamentos.")
+
+    Container(worker, "Worker de Notificações", "Java 21 · Spring Scheduler", "Processo assíncrono que verifica\nperiodicamente empréstimos próximos\ndo vencimento e em atraso,\ndisparando e-mails automáticos.")
+}
+
+' ─── Atores → Frontend ────────────────────────────────────
+Rel(admin, frontend, "Acessa via navegador", "HTTPS")
+Rel(bibliotecario, frontend, "Acessa via navegador", "HTTPS")
+Rel(professor, frontend, "Acessa via navegador", "HTTPS")
+Rel(aluno, frontend, "Acessa via navegador", "HTTPS")
+
+' ─── Frontend → API ───────────────────────────────────────
+Rel(frontend, api, "Envia requisições para", "REST / JSON / HTTPS")
+
+' ─── API → internos ───────────────────────────────────────
+Rel(api, db, "Lê e persiste dados via", "JDBC / SQL")
+
+' ─── API → externos ───────────────────────────────────────
+Rel(api, suap, "Valida token de autenticação via", "OAuth2 / HTTPS")
+Rel(api, abacatepay, "Processa cobranças e doações via", "REST / HTTPS")
+
+' ─── Worker ───────────────────────────────────────────────
+Rel(worker, db, "Consulta empréstimos vencidos via", "JDBC / SQL")
+Rel(worker, gmail, "Envia e-mails de aviso via", "REST / HTTPS")
+
+@enduml

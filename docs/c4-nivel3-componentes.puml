@@ -1,0 +1,82 @@
+@startuml c4-nivel3-componentes
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Sistema qa-gym-library — Nível 3: Diagrama de Componentes\n(Container: API REST)
+
+LAYOUT_WITH_LEGEND()
+
+' ─── Elementos externos ao container ──────────────────────
+Container_Ext(frontend, "Aplicação Web", "HTML / JS", "Interface do usuário.")
+ContainerDb_Ext(db, "Banco de Dados", "PostgreSQL", "Persistência dos dados.")
+System_Ext(suap, "SUAP", "Autenticação SSO via OAuth2.")
+System_Ext(abacatepay, "Abacate Pay", "Gateway de pagamento.")
+System_Ext(gmail, "Google Gmail API", "Envio de e-mails.")
+
+' ─── Boundary: API REST ───────────────────────────────────
+Container_Boundary(api, "API REST — Java 21 / Spring Boot") {
+
+    ' Controllers
+    Component(bookCtrl, "BookController", "REST Controller", "Endpoints de livros:\ncadastro, busca, listagem e ordenação.")
+    Component(userCtrl, "UserController", "REST Controller", "Endpoints de usuários:\ncadastro e ativação/inativação.")
+    Component(loanCtrl, "LoanController", "REST Controller", "Endpoints de empréstimos\ne devoluções.")
+    Component(reportCtrl, "ReportController", "REST Controller", "Endpoints de relatórios:\ndisponibilidade e uso do acervo.")
+
+    ' Services
+    Component(libraryService, "LibraryService", "Service", "Gerencia o acervo: cadastro,\nbusca, ordenação e validação de livros.")
+    Component(loanService, "LoanService", "Service", "Controla empréstimos, devoluções,\nregras de bloqueio e multas.")
+    Component(reportService, "ReportService", "Service", "Gera relatórios agregados\nde acervo e empréstimos.")
+
+    ' Adapters / Integrações
+    Component(authAdapter, "SuapAuthAdapter", "Adapter", "Valida tokens OAuth2 do SUAP\ne carrega o perfil do usuário.")
+    Component(paymentAdapter, "AbacatePayAdapter", "Adapter", "Envia cobranças de multa\ne registra doações ao acervo.")
+    Component(notifAdapter, "GmailNotificationAdapter", "Adapter", "Monta e envia e-mails transacionais\nvia Google Gmail API.")
+
+    ' Repositories
+    Component(bookRepo, "BookRepository", "Repository", "Acesso a dados de livros\nno banco PostgreSQL.")
+    Component(userRepo, "UserRepository", "Repository", "Acesso a dados de usuários\nno banco PostgreSQL.")
+    Component(loanRepo, "LoanRepository", "Repository", "Acesso a dados de empréstimos\nno banco PostgreSQL.")
+
+    ' Utils
+    Component(validator, "BookValidator", "Util", "Valida campos obrigatórios\ne regras dos livros.")
+    Component(normalizer, "TextNormalizer", "Util", "Normaliza textos para buscas\ncase-insensitive e parciais.")
+}
+
+' ─── Frontend → Controllers ───────────────────────────────
+Rel(frontend, bookCtrl, "GET / POST /books")
+Rel(frontend, userCtrl, "GET / POST /users")
+Rel(frontend, loanCtrl, "POST /loans · POST /returns")
+Rel(frontend, reportCtrl, "GET /reports")
+
+' ─── Controllers → Services ───────────────────────────────
+Rel(bookCtrl, libraryService, "Usa")
+Rel(bookCtrl, authAdapter, "Verifica autenticação")
+Rel(userCtrl, libraryService, "Usa")
+Rel(userCtrl, authAdapter, "Verifica autenticação")
+Rel(loanCtrl, loanService, "Usa")
+Rel(loanCtrl, authAdapter, "Verifica autenticação")
+Rel(reportCtrl, reportService, "Usa")
+Rel(reportCtrl, authAdapter, "Verifica autenticação")
+
+' ─── Services → Repositories ──────────────────────────────
+Rel(libraryService, bookRepo, "Persiste e consulta livros")
+Rel(libraryService, userRepo, "Persiste e consulta usuários")
+Rel(libraryService, validator, "Valida dados de entrada")
+Rel(libraryService, normalizer, "Normaliza buscas")
+Rel(loanService, loanRepo, "Persiste e consulta empréstimos")
+Rel(loanService, bookRepo, "Verifica disponibilidade")
+Rel(loanService, paymentAdapter, "Processa multas")
+Rel(loanService, notifAdapter, "Notifica por e-mail")
+Rel(reportService, bookRepo, "Consulta acervo")
+Rel(reportService, loanRepo, "Consulta empréstimos")
+
+' ─── Repositories → Banco ─────────────────────────────────
+Rel(bookRepo, db, "SQL")
+Rel(userRepo, db, "SQL")
+Rel(loanRepo, db, "SQL")
+
+' ─── Adapters → Externos ──────────────────────────────────
+Rel(authAdapter, suap, "Valida token via", "OAuth2 / HTTPS")
+Rel(paymentAdapter, abacatepay, "Cobra multa via", "REST / HTTPS")
+Rel(notifAdapter, gmail, "Envia e-mail via", "REST / HTTPS")
+
+@enduml

@@ -1,0 +1,165 @@
+@startuml c4-nivel4-codigo
+
+title Sistema qa-gym-library — Nível 4: Diagrama de Código\n(Modelo de domínio e serviços)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+skinparam class {
+    BackgroundColor White
+    BorderColor #444444
+    ArrowColor #444444
+    FontName Arial
+    FontSize 12
+    HeaderBackgroundColor #DDEEFF
+}
+
+skinparam note {
+    BackgroundColor #FFFDE7
+    BorderColor #F9A825
+}
+
+' ─── Pacote: model ────────────────────────────────────────
+package "br.edu.ifrn.qagym.model" #EEF4FF {
+
+    class Book {
+        - isbn: String
+        - title: String
+        - author: String
+        - publicationYear: int
+        - available: boolean
+        --
+        + Book(isbn, title, author, year)
+        + getIsbn(): String
+        + getTitle(): String
+        + getAuthor(): String
+        + getPublicationYear(): int
+        + isAvailable(): boolean
+        + setAvailable(boolean): void
+        + isClassic(): boolean
+    }
+
+    class User {
+        - registration: String
+        - name: String
+        - active: boolean
+        --
+        + User(registration, name)
+        + getRegistration(): String
+        + getName(): String
+        + isActive(): boolean
+        + setActive(boolean): void
+    }
+
+    class Loan {
+        - loanDate: LocalDate
+        - expectedReturnDate: LocalDate
+        - returnDate: LocalDate
+        --
+        + Loan(book, user, loanDate)
+        + getBook(): Book
+        + getUser(): User
+        + getLoanDate(): LocalDate
+        + getExpectedReturnDate(): LocalDate
+        + getReturnDate(): LocalDate
+        + setReturnDate(LocalDate): void
+        + isReturned(): boolean
+        + isLate(LocalDate): boolean
+        + daysLate(LocalDate): long
+        + calculateFine(LocalDate): double
+    }
+}
+
+' ─── Pacote: service ──────────────────────────────────────
+package "br.edu.ifrn.qagym.service" #EEF9EE {
+
+    class LibraryService {
+        - books: List<Book>
+        - users: List<User>
+        --
+        + addBook(Book): void
+        + addUser(User): void
+        + getAllBooks(): List<Book>
+        + getAllUsers(): List<User>
+        + findBookByIsbn(String): Book
+        + findBooksByTitle(String): List<Book>
+        + findBooksByAuthor(String): List<Book>
+        + countBooks(): int
+        + countAvailableBooks(): int
+        + countUnavailableBooks(): int
+        + sortBooksByTitle(): List<Book>
+        + sortBooksByYear(): List<Book>
+        + getBooks(String): List<Book>
+    }
+
+    class LoanService {
+        - loans: List<Loan>
+        --
+        + borrowBook(Book, User, LocalDate): Loan
+        + returnBook(Loan, LocalDate): void
+        + getAllLoans(): List<Loan>
+        + getActiveLoans(): List<Loan>
+        + getLateLoans(LocalDate): List<Loan>
+    }
+
+    class ReportService {
+        --
+        + total(List<Book>): int
+        + countAvailableBooks(List<Book>): int
+        + countUnavailableBooks(List<Book>): int
+        + booksByAuthor(List<Book>): Map<String, Long>
+        + activeLoanCount(List<Loan>): int
+    }
+}
+
+' ─── Pacote: util ─────────────────────────────────────────
+package "br.edu.ifrn.qagym.util" #FFF8EE {
+
+    class BookValidator {
+        --
+        + isValid(Book): boolean
+    }
+
+    class TextNormalizer {
+        --
+        + normalize(String): String
+        + containsIgnoreCase(String, String): boolean
+    }
+}
+
+' ─── Pacote: exception ────────────────────────────────────
+package "br.edu.ifrn.qagym.exception" #FFF0F0 {
+
+    class BookAlreadyExistsException {
+        + BookAlreadyExistsException(isbn: String)
+    }
+
+    class LoanNotAllowedException {
+        + LoanNotAllowedException(message: String)
+    }
+}
+
+' ─── Hierarquia de exceções ───────────────────────────────
+RuntimeException <|-- BookAlreadyExistsException
+RuntimeException <|-- LoanNotAllowedException
+
+' ─── Relacionamentos de domínio ───────────────────────────
+Loan "1" --> "1" Book : < empréstimo de
+Loan "1" --> "1" User : < realizado por
+
+' ─── LibraryService ───────────────────────────────────────
+LibraryService "1" o-- "0..*" Book      : gerencia >
+LibraryService "1" o-- "0..*" User      : gerencia >
+LibraryService ..> BookValidator        : usa >
+LibraryService ..> TextNormalizer       : usa >
+LibraryService ..> BookAlreadyExistsException : lança >
+
+' ─── LoanService ──────────────────────────────────────────
+LoanService "1" o-- "0..*" Loan         : controla >
+LoanService ..> LoanNotAllowedException : lança >
+
+' ─── ReportService ────────────────────────────────────────
+ReportService ..> Book : analisa >
+ReportService ..> Loan : analisa >
+
+@enduml

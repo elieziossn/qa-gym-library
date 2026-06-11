@@ -1,0 +1,33 @@
+@startuml c4-nivel1-contexto
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Sistema qa-gym-library — Nível 1: Diagrama de Contexto
+
+LAYOUT_WITH_LEGEND()
+
+' ─── Atores ───────────────────────────────────────────────
+Person(admin, "Administrador", "Gerencia usuários, papéis e\nconfigurações gerais do sistema.")
+Person(bibliotecario, "Bibliotecário", "Cadastra livros, gerencia\nempréstimos e devoluções.")
+Person(professor, "Professor", "Realiza empréstimos com\nprazo estendido e acessa relatórios.")
+Person(aluno, "Aluno", "Realiza empréstimos\ne devoluções de livros.")
+
+' ─── Sistema principal ────────────────────────────────────
+System(qagym, "qa-gym-library", "Sistema de gerenciamento de\nbiblioteca acadêmica. Controla acervo,\nempréstimos, devoluções, multas e\nnotificações.")
+
+' ─── Sistemas externos ────────────────────────────────────
+System_Ext(suap, "SUAP", "Sistema Unificado de Administração\nPública do IFRN. Provê autenticação\nSSO para todos os perfis de usuário.")
+System_Ext(abacatepay, "Abacate Pay", "Gateway de pagamento para\ncobrança de multas por atraso\ne recebimento de doações ao acervo.")
+System_Ext(gmail, "Google Gmail API", "Serviço de envio de e-mails para\nnotificações de confirmação, vencimento\niminente e atraso de devolução.")
+
+' ─── Relacionamentos: atores → sistema ────────────────────
+Rel(admin, qagym, "Administra o sistema")
+Rel(bibliotecario, qagym, "Gerencia acervo e empréstimos")
+Rel(professor, qagym, "Consulta e realiza empréstimos")
+Rel(aluno, qagym, "Consulta e realiza empréstimos")
+
+' ─── Relacionamentos: sistema → externos ──────────────────
+Rel(qagym, suap, "Autentica usuários via", "SSO / OAuth2 / HTTPS")
+Rel(qagym, abacatepay, "Processa multas e doações via", "REST / HTTPS")
+Rel(qagym, gmail, "Envia notificações por e-mail via", "REST / HTTPS")
+
+@enduml
