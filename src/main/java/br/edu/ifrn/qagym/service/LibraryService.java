@@ -11,6 +11,7 @@ public class LibraryService {
 
     private final List<Book> books = new ArrayList<>();
     private final List<User> users = new ArrayList<>();
+    private Book book;
 
     public void addBook(Book book) {
         if (isBookRegistered(book.getIsbn())){
@@ -50,6 +51,22 @@ public class LibraryService {
         return result;
     }
 
+//    public List<Book> findBooksByAuthor(String author) {
+//        // TODO: implementar busca por autor
+//        return List.of();
+//    }
+//
+//    public int countBooks() {
+//        // TODO: implementar contagem total de livros
+//        return 0;
+//    }
+//
+//    public int countAvailableBooks() {
+//        // TODO: implementar contagem de livros disponíveis
+//        return 0;
+//    }
+
+    //Implementado Por Bruniely
     public List<Book> findBooksByAuthor(String author) {
         // TODO: implementar busca por autor
         return List.of();
@@ -72,9 +89,12 @@ public class LibraryService {
     }
 
     public int countUnavailableBooks() {
-        // TODO: implementar contagem de livros indisponíveis
-        return 0;
-    }
+          int qtdlivro = 0;
+            for (Book book : books){
+                if(!book.isAvailable()){
+                  qtdlivro++;
+                }
+            }
 
     public List<Book> sortBooksByTitle() {
         List<Book> sorted = new ArrayList<>(books);

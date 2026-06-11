@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class ReportService {
 
+
+
     public int total(List<Book> books) {
         return books.size();
     }
@@ -23,9 +25,15 @@ public class ReportService {
                           .count();
     }
 
+    //Implementado Por Bruniely
     public int countUnavailableBooks(List<Book> books) {
-        // TODO: implementar contagem de livros indisponíveis
-        return 0;
+        int count = 0;
+            for(Book book : books){
+                if (!book.isAvailable()){
+                    count++;
+                }
+            }
+        return count;
     }
 
     public Map<String, Long> booksByAuthor(List<Book> books) {
