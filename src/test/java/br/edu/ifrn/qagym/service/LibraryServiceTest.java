@@ -50,7 +50,7 @@ class LibraryServiceTest {
     void deveBuscarLivrosPorAutor() {
         Book book = new Book("978-0-13-468599-1", "Clean Code", "Robert C. Martin", 2008);
         service.addBook(book);
-        List<Book> found = service.findBooksByAuthor("Robert C. Martin");
+        List<Book> found = service.findBooksByAuthor("robert c. martin");
         assertThat(found).contains(book);
     }
 

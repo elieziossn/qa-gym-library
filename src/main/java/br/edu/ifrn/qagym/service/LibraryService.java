@@ -54,7 +54,7 @@ public class LibraryService {
         List<Book> result = new ArrayList<>();
 
         for (Book book : books) {
-            if (book.getAuthor().equals(author)) {
+            if (book.getAuthor().equalsIgnoreCase(author)) {
                 result.add(book);
             }
         }
